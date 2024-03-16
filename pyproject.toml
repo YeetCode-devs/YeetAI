@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "YeetAI"
+version = "0.1.0"
+description = "A Telegram chat bot with support for multiple LLMs!"
+authors = ["YeetCode Developers <YeetCode-devs@protonmail.com>"]
+license = "GPL-3.0-only"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+g4f = "^0.2.4.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.3.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
