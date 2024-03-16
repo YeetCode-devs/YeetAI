@@ -395,13 +395,13 @@ files = [
 
 [[package]]
 name = "g4f"
-version = "0.2.4.1"
+version = "0.2.5.0"
 description = "The official gpt4free repository | various collection of powerful language models"
 optional = false
 python-versions = "*"
 files = [
-    {file = "g4f-0.2.4.1-py3-none-any.whl", hash = "sha256:b2815e61f8662758bc3b0552950925bb7d945f305405019af6d0041d40d4f096"},
-    {file = "g4f-0.2.4.1.tar.gz", hash = "sha256:f0d59e38fea2c0653d395b6970d0a52f481b79e49fff2d7fc453d310c3102a22"},
+    {file = "g4f-0.2.5.0-py3-none-any.whl", hash = "sha256:673c11e70a43c309c45c91d2103751f6eabad80c61beb0ccd7c8faff023bdd4f"},
+    {file = "g4f-0.2.5.0.tar.gz", hash = "sha256:d90029497df82e79dea6907b33de3b21dedc9654bf9effaecbfa422128804842"},
 ]
 
 [package.dependencies]
