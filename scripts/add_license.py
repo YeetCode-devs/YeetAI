@@ -16,10 +16,11 @@
 
 import os
 
+from typing import TypeAlias
 from pathlib import Path
 
 # GPL-3.0 License header
-license_header = """
+license_header = """\
 # SPDX-License-Identifier: GPL-3.0-only
 #
 # This program is free software: you can redistribute it and/or modify
@@ -37,7 +38,7 @@ license_header = """
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 """
 
-type StatusIsOk = True | False
+StatusIsOk: TypeAlias = bool
 
 
 def add_license_header(file_path) -> StatusIsOk:
