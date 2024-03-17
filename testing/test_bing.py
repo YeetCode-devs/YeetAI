@@ -23,7 +23,7 @@ def generate_response() -> str:
 
     response = client.chat.completions.create(
         model="gpt-4.0-turbo",
-        messages=[{"role": "user", "content": "Say hi, with your response starting with START and ending with END"}]
+        messages=[{"role": "user", "content": "Say hi, with your response starting with START and ending with END"}],
     )
 
     return response.choices[0].message.content

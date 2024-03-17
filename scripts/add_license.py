@@ -19,7 +19,7 @@ import os
 from pathlib import Path
 
 # GPL-3.0 License header
-license_header = '''
+license_header = """
 # SPDX-License-Identifier: GPL-3.0-only
 #
 # This program is free software: you can redistribute it and/or modify
@@ -35,18 +35,18 @@ license_header = '''
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
-'''
+"""
 
 type StatusIsOk = True | False
 
 
 def add_license_header(file_path) -> StatusIsOk:
-    with open(file_path, 'r+') as f:
+    with open(file_path, "r+") as f:
         content = f.read()
         if license_header in content:
             return False
         f.seek(0, 0)
-        f.write(license_header.lstrip('\n') + '\n' + content)
+        f.write(license_header.lstrip("\n") + "\n" + content)
     return True
 
 
