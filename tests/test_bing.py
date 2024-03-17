@@ -21,10 +21,13 @@ from g4f.Provider import Bing
 def generate_response() -> str:
     client = Client(provider=Bing)
 
-    response = client.chat.completions.create(
-        model="gpt-4.0-turbo",
-        messages=[{"role": "user", "content": "Say hi, with your response starting with START and ending with END"}],
-    )
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4.0-turbo",
+            messages=[{"role": "user", "content": "Say hi, with your response starting with START and ending with END"}],
+        )
+    except:
+        print("ERROR: Could not create a prompt!")
 
     return response.choices[0].message.content
 
