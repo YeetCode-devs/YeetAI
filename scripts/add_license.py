@@ -20,7 +20,7 @@ from typing import TypeAlias
 from pathlib import Path
 
 # GPL-3.0 License header
-license_header = """
+license_header = """\
 # SPDX-License-Identifier: GPL-3.0-only
 #
 # This program is free software: you can redistribute it and/or modify
