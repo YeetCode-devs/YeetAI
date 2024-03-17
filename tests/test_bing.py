@@ -35,4 +35,10 @@ def generate_response() -> str:
 class TestOutput:
     def test_output(self):
         response = generate_response()
+
+        if (len(response) > 0):
+            print("✅ Bing is up!")
+        else:
+            print("❌ Bing is down...")
+
         assert response.startswith("START") and response.endswith("END")
