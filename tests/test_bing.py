@@ -24,7 +24,9 @@ def generate_response() -> str:
     try:
         response = client.chat.completions.create(
             model="gpt-4.0-turbo",
-            messages=[{"role": "user", "content": "Say hi, with your response starting with START and ending with END"}],
+            messages=[
+                {"role": "user", "content": "Say hi, with your response starting with START and ending with END"}
+            ],
         )
     except:
         print("ERROR: Could not create a prompt!")
@@ -36,7 +38,7 @@ class TestOutput:
     def test_output(self):
         response = generate_response()
 
-        if (len(response) > 0):
+        if len(response) > 0:
             print("✅ Bing is up!")
         else:
             print("❌ Bing is down...")
