@@ -24,3 +24,6 @@ def main() -> None:
     print(f"Installing dev dependencies (for black)")
     os.system("poetry install --with dev")
     Path(".git/hooks/pre-commit").chmod(0o700)
+
+
+main()
