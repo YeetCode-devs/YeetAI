@@ -26,5 +26,7 @@ jobs:
 
     - uses: GuillaumeFalourd/git-commit-push@v1.3
       with:
+          email: "actions@github.com"
+          name: "GitHub Actions Bot"
           commit_message: "Add license to files"
           target_branch: main
