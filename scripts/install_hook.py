@@ -5,7 +5,7 @@ from pathlib import Path
 SCRIPT = r"""#!/bin/sh
 set -o noglob
 
-poetry run install-hook
+python3 scripts/install_hook.py
 
 poetry run black .
 
