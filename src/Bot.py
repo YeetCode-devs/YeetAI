@@ -10,6 +10,9 @@ def main() -> None:
     api_hash = getenv("API_HASH")
     bot_token = getenv("BOT_TOKEN")
 
+    if not all([api_id, api_hash, bot_token]):
+        raise ValueError("Could not get all required credentials from env!")
+
     app = TelegramClient("app", api_id, api_hash).start(bot_token=bot_token)
 
     @app.on(events.NewMessage(incoming=True, pattern="/start"))
