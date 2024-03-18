@@ -15,6 +15,7 @@ def generate_response() -> str:
         )
     except:
         print("ERROR: Could not create a prompt!")
+        raise Exception("ERROR: Could not create a prompt!")
 
     return response.choices[0].message.content
 
