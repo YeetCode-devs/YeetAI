@@ -26,9 +26,9 @@ jobs:
         output=$(python scripts/add_license.py) || ""
         echo "$output"
         if echo "$output" | grep -q "added"; then
-          echo "::set-output name=added_license::true"
+          echo "added_license=true" >> $GITHUB_OUTPUT
         else
-          echo "::set-output name=added_license::false"
+          echo "added_license=false" >> $GITHUB_OUTPUT
         fi
       id: add_license
         
