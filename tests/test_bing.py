@@ -15,8 +15,8 @@
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
 from g4f.client import Client
-from g4f.Provider import Bing
 from g4f.models import default
+from g4f.Provider import Bing
 
 
 def generate_response() -> str:

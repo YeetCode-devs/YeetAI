@@ -15,9 +15,8 @@
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
 import os
-
-from typing import TypeAlias
 from pathlib import Path
+from typing import TypeAlias
 
 # GPL-3.0 License header
 license_header = """\

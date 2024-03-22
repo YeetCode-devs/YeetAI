@@ -14,9 +14,10 @@
 #
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
+from os import getenv
+
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
-from os import getenv
 
 
 def main() -> None:
