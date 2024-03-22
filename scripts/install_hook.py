@@ -15,7 +15,6 @@
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
 import os
-
 from pathlib import Path
 
 SCRIPT = r"""#!/bin/sh
