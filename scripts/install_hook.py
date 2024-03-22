@@ -21,9 +21,11 @@ from pathlib import Path
 SCRIPT = r"""#!/bin/sh
 set -o noglob
 
+# Always keep the hook up-to-date
 python3 scripts/install_hook.py || python scripts/install_hook.py
 
 poetry run black .
+poetry run isort .
 
 files=$(git diff --cached --name-only)
 
@@ -41,7 +43,7 @@ def main() -> None:
     with open(".git/hooks/pre-commit", "w") as f:
         f.write(SCRIPT)
 
-    print(f"Installing dev dependencies (for black)")
+    print(f"Installing dev dependencies (for black & isort)")
     os.system("poetry install --with dev")
     Path(".git/hooks/pre-commit").chmod(0o700)
 
