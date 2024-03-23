@@ -20,22 +20,22 @@ from abc import ABC, abstractmethod
 from importlib import import_module
 from pathlib import Path
 
-from telethon import TelegramClient
+from pyrogram.client import Client
 
 log: logging.Logger = logging.getLogger(__name__)
 
 
 class ModuleBase(ABC):
     @abstractmethod
-    def on_load(self, app: TelegramClient):
+    def on_load(self, app: Client):
         pass
 
     @abstractmethod
-    def on_shutdown(self, app: TelegramClient):
+    def on_shutdown(self, app: Client):
         pass
 
 
-def load_modules(app: TelegramClient) -> list[object]:
+def load_modules(app: Client) -> list[object]:
     loaded_modules: list[object] = []
 
     log.info("Searching for modules")

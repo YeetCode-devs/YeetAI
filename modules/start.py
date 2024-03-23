@@ -14,19 +14,21 @@
 #
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
-from telethon import TelegramClient
-from telethon.events import NewMessage
+from pyrogram import filters
+from pyrogram.client import Client
+from pyrogram.handlers import MessageHandler
+from pyrogram.types import Message
 
 from src.Module import ModuleBase
 
 
 class Module(ModuleBase):
-    def on_load(self, app: TelegramClient):
-        app.add_event_handler(start, NewMessage(incoming=True, pattern="/start"))
+    def on_load(self, app: Client):
+        app.add_handler(MessageHandler(start, filters.command("start")))
 
-    def on_shutdown(self, app: TelegramClient):
+    def on_shutdown(self, app: Client):
         pass
 
 
-async def start(event: NewMessage.Event):
-    await event.reply("Hello!")
+async def start(app: Client, message: Message):
+    await message.reply("Hello!")
