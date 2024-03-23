@@ -41,7 +41,7 @@ StatusIsOk: TypeAlias = bool
 
 
 def add_license_header(file_path) -> StatusIsOk:
-    with open(file_path, "r+") as f:
+    with open(file_path, "r+", encoding="utf-8") as f:
         content = f.read()
         if license_header in content:
             return False
