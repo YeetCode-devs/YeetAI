@@ -23,7 +23,7 @@ from .Module import load_modules
 
 
 def main() -> None:
-    load_dotenv()
+    load_dotenv(override=True)
 
     api_id = getenv("API_ID", 0)
     api_hash = getenv("API_HASH", "")
