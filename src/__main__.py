@@ -14,6 +14,7 @@
 #
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
+from . import Logging
 from .Bot import main
 
 if __name__ == "__main__":
