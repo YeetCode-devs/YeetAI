@@ -17,11 +17,13 @@
 from os import getenv
 
 from dotenv import load_dotenv
-from telethon import TelegramClient, events
+from pyrogram.client import Client
+
+from .Module import load_modules
 
 
 def main() -> None:
-    load_dotenv()
+    load_dotenv(override=True)
 
     api_id = getenv("API_ID", 0)
     api_hash = getenv("API_HASH", "")
@@ -30,10 +32,7 @@ def main() -> None:
     if not all([api_id, api_hash, bot_token]):
         raise ValueError("Could not get all required credentials from env!")
 
-    app = TelegramClient("app", int(api_id), api_hash).start(bot_token=bot_token)
+    app = Client("app", int(api_id), api_hash, bot_token=bot_token)
 
-    @app.on(events.NewMessage(incoming=True, pattern="/start"))
-    async def start(event):
-        await event.reply("Hello!")
-
-    app.run_until_disconnected()
+    loaded_modules = load_modules(app)
+    app.run()
