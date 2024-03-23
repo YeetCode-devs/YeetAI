@@ -14,25 +14,19 @@
 #
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
-from os import getenv
+from telethon import TelegramClient
+from telethon.events import NewMessage
 
-from dotenv import load_dotenv
-from telethon import TelegramClient, events
-
-from .Module import load_modules
+from src.Module import ModuleBase
 
 
-def main() -> None:
-    load_dotenv()
+class Module(ModuleBase):
+    def on_load(self, app: TelegramClient):
+        app.add_event_handler(start, NewMessage(incoming=True, pattern="/start"))
 
-    api_id = getenv("API_ID", 0)
-    api_hash = getenv("API_HASH", "")
-    bot_token = getenv("BOT_TOKEN", "")
+    def on_shutdown(self, app: TelegramClient):
+        pass
 
-    if not all([api_id, api_hash, bot_token]):
-        raise ValueError("Could not get all required credentials from env!")
 
-    app = TelegramClient("app", int(api_id), api_hash).start(bot_token=bot_token)
-
-    loaded_modules = load_modules(app)
-    app.run_until_disconnected()
+async def start(event: NewMessage.Event):
+    await event.reply("Hello!")
