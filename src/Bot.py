@@ -19,6 +19,8 @@ from os import getenv
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
 
+from .Module import load_modules
+
 
 def main() -> None:
     load_dotenv()
@@ -36,4 +38,5 @@ def main() -> None:
     async def start(event):
         await event.reply("Hello!")
 
+    loaded_modules = load_modules(app)
     app.run_until_disconnected()
