@@ -15,6 +15,7 @@
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
 import asyncio
+import json
 import logging
 import os
 import random
@@ -49,23 +50,45 @@ class Module(ModuleBase):
         pass
 
 
-async def generate_response(prompt: str) -> str:
+async def generate_response(user_prompts: list[dict[str, str]]) -> str:
     provider: type[Bing, FreeChatgpt] = random.choice([Bing, FreeChatgpt])
     client: g4fClient = g4fClient(provider=provider)
+    system_prompt: list[dict[str, str]] = [{"role": "system", "content": SYSTEM_PROMPT}]
+    resultant_prompt: list[dict[str, str]] = system_prompt + user_prompts
+
+    log.info(f"Generating response with prompt:\n{json.dumps(resultant_prompt, indent=2)}")
 
     try:
         response: ChatCompletion = await asyncio.get_running_loop().run_in_executor(
             None,
             client.chat.completions.create,
-            [{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": prompt}],
+            resultant_prompt,
             default,
         )
         return response.choices[0].message.content
     except Exception as e:
-        log.error(f"Could not create a prompt! {e}")
+        log.error(f"Could not create a prompt!: {e}")
         raise
 
 
 async def cmd_ask(app: Client, message: Message):
-    response: str = await generate_response(message.text)
-    await message.reply("hi")
+    my_id: int = (await app.get_me()).id
+    previous_prompts: list[dict[str, str]] = []
+
+    # If we were to use message.reply_to_message directly, we cannot get subsequent replies
+    reply_to_message = await app.get_messages(message.chat.id, message.reply_to_message.id, replies=20)
+
+    # Track (at max 20) replies to preserve context
+    while reply_to_message is not None:
+        if reply_to_message.from_user.id == my_id:
+            previous_prompts.append({"role": "assistant", "content": reply_to_message.text})
+        else:
+            previous_prompts.append({"role": "user", "content": reply_to_message.text})
+
+        reply_to_message = reply_to_message.reply_to_message
+
+    previous_prompts.reverse()
+    previous_prompts.append({"role": "user", "content": message.text})
+
+    response: str = await generate_response(previous_prompts)
+    await message.reply(response)
