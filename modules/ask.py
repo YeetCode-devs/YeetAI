@@ -50,6 +50,25 @@ class Module(ModuleBase):
         pass
 
 
+class LoggedList(list):
+    def __init__(self):
+        self.log = log.getChild("LoggedList")
+        self.log.info(f"Note: LoggedList instantiated. This is a custom wrapper around regular list.")
+        super().__init__()
+
+    def append(self, obj):
+        self.log.info(f"Appending: {obj}")
+        super().append(obj)
+
+    def insert(self, index, obj):
+        self.log.info(f"Inserting: {obj}")
+        super().insert(index, obj)
+
+    def reverse(self):
+        self.log.info("Reversing")
+        super().reverse()
+
+
 async def generate_response(user_prompts: list[dict[str, str]]) -> str:
     provider: type[Bing, FreeChatgpt] = random.choice([Bing, FreeChatgpt])
     client: g4fClient = g4fClient(provider=provider)
@@ -73,7 +92,7 @@ async def generate_response(user_prompts: list[dict[str, str]]) -> str:
 
 async def cmd_ask(app: Client, message: Message):
     my_id: int = (await app.get_me()).id
-    previous_prompts: list[dict[str, str]] = []
+    previous_prompts: list[dict[str, str]] = LoggedList()
 
     # If we were to use message.reply_to_message directly, we cannot get subsequent replies
     reply_to_message = await app.get_messages(message.chat.id, message.reply_to_message.id, replies=20)
