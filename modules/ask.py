@@ -22,7 +22,7 @@ import random
 
 from g4f.client import Client as g4fClient
 from g4f.models import default
-from g4f.Provider import Bing, FreeChatgpt
+from g4f.Provider import Bing, FreeChatgpt, RetryProvider, You
 from g4f.stubs import ChatCompletion
 from pyrogram import filters
 from pyrogram.client import Client
@@ -70,8 +70,7 @@ class LoggedList(list):
 
 
 async def generate_response(user_prompts: list[dict[str, str]]) -> str:
-    provider: type[Bing, FreeChatgpt] = random.choice([Bing, FreeChatgpt])
-    client: g4fClient = g4fClient(provider=provider)
+    client: g4fClient = g4fClient(provider=RetryProvider([Bing, You, FreeChatgpt], shuffle=False))
     system_prompt: list[dict[str, str]] = [{"role": "system", "content": SYSTEM_PROMPT}]
     resultant_prompt: list[dict[str, str]] = system_prompt + user_prompts
 
