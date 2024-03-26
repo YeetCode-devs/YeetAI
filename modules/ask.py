@@ -21,7 +21,7 @@ import os
 import random
 
 from g4f.client import Client as g4fClient
-from g4f.models import default
+from g4f.models import gpt_4
 from g4f.Provider import Bing, FreeChatgpt, RetryProvider, You
 from g4f.stubs import ChatCompletion
 from pyrogram import filters
@@ -81,7 +81,7 @@ async def generate_response(user_prompts: list[dict[str, str]]) -> str:
             None,
             client.chat.completions.create,
             resultant_prompt,
-            default,
+            gpt_4,
         )
         return response.choices[0].message.content
     except Exception as e:
@@ -111,5 +111,7 @@ async def cmd_ask(app: Client, message: Message):
     previous_prompts.reverse()
     previous_prompts.append({"role": "user", "content": message.text})
 
+    to_edit = await message.reply("Generating response...", reply_to_message_id=message.id)
+
     response: str = await generate_response(previous_prompts)
-    await message.reply(response)
+    await to_edit.edit_text(response)
