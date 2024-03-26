@@ -93,8 +93,11 @@ async def cmd_ask(app: Client, message: Message):
     my_id: int = (await app.get_me()).id
     previous_prompts: list[dict[str, str]] = LoggedList()
 
-    # If we were to use message.reply_to_message directly, we cannot get subsequent replies
-    reply_to_message = await app.get_messages(message.chat.id, message.reply_to_message.id, replies=20)
+    if message.reply_to_message:
+        # If we were to use message.reply_to_message directly, we cannot get subsequent replies
+        reply_to_message = await app.get_messages(message.chat.id, message.reply_to_message.id, replies=20)
+    else:
+        reply_to_message = None
 
     # Track (at max 20) replies to preserve context
     while reply_to_message is not None:
