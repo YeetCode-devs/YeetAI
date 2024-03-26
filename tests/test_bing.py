@@ -15,7 +15,7 @@
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
 from g4f.client import Client
-from g4f.models import default
+from g4f.models import gpt_4
 from g4f.Provider import Bing
 
 
@@ -24,7 +24,7 @@ def generate_response() -> str:
 
     try:
         response = client.chat.completions.create(
-            model=default,
+            model=gpt_4,
             messages=[
                 {"role": "user", "content": "Say hi, with your response starting with START and ending with END"}
             ],
