@@ -44,8 +44,9 @@ def main() -> None:
     default_event_loop_policy = asyncio.get_event_loop_policy()
     import g4f  # Trigger g4f event loop policy set # noqa: F401 # pylint: disable=unused-import # isort:skip
 
-    if isinstance(asyncio.get_event_loop_policy(), asyncio.WindowsSelectorEventLoopPolicy):
-        asyncio.set_event_loop_policy(default_event_loop_policy)
+    if hasattr(asyncio, "WindowsSelectorEventLoopPolicy"):
+        if isinstance(asyncio.get_event_loop_policy(), asyncio.WindowsSelectorEventLoopPolicy):
+            asyncio.set_event_loop_policy(default_event_loop_policy)
 
     loaded_modules = load_modules(app)
     app.run()
