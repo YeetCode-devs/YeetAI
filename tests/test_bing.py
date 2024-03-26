@@ -29,11 +29,10 @@ def generate_response() -> str:
                 {"role": "user", "content": "Say hi, with your response starting with START and ending with END"}
             ],
         )
+        return response.choices[0].message.content
     except:
         print("ERROR: Could not create a prompt!")
         raise
-
-    return response.choices[0].message.content
 
 
 class TestOutput:
