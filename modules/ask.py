@@ -111,5 +111,7 @@ async def cmd_ask(app: Client, message: Message):
     previous_prompts.reverse()
     previous_prompts.append({"role": "user", "content": message.text})
 
+    to_edit = await message.reply("Generating response...", reply_to_message_id=message.id)
+
     response: str = await generate_response(previous_prompts)
-    await message.reply(response)
+    await to_edit.edit_text(response)
