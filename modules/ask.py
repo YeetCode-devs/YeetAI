@@ -21,7 +21,7 @@ import os
 import random
 
 from g4f.client import Client as g4fClient
-from g4f.models import default
+from g4f.models import gpt_4
 from g4f.Provider import Bing, FreeChatgpt, RetryProvider, You
 from g4f.stubs import ChatCompletion
 from pyrogram import filters
@@ -81,7 +81,7 @@ async def generate_response(user_prompts: list[dict[str, str]]) -> str:
             None,
             client.chat.completions.create,
             resultant_prompt,
-            default,
+            gpt_4,
         )
         return response.choices[0].message.content
     except Exception as e:
