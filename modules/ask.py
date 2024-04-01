@@ -79,11 +79,11 @@ async def generate_response(user_prompts: list[dict[str, str]]) -> str:
     try:
         response: ChatCompletion = await asyncio.get_running_loop().run_in_executor(
             None,
-            client.chat.completions.create,
+            client.chat.completions.create,  # type: ignore
             resultant_prompt,
             gpt_4,
-        )
-        return response.choices[0].message.content
+        )  # type: ignore
+        return response.choices[0].message.content  # type: ignore
     except Exception as e:
         log.error(f"Could not create a prompt!: {e}")
         raise
@@ -101,12 +101,12 @@ async def cmd_ask(app: Client, message: Message):
 
     # Track (at max 20) replies to preserve context
     while reply_to_message is not None:
-        if reply_to_message.from_user.id == my_id:
+        if reply_to_message.from_user.id == my_id:  # type: ignore
             previous_prompts.append({"role": "assistant", "content": reply_to_message.text})
         else:
             previous_prompts.append({"role": "user", "content": reply_to_message.text})
 
-        reply_to_message = reply_to_message.reply_to_message
+        reply_to_message = reply_to_message.reply_to_message  # type: ignore
 
     previous_prompts.reverse()
     previous_prompts.append({"role": "user", "content": message.text})
