@@ -39,13 +39,13 @@ def load_modules(app: Client) -> list[object]:
     loaded_modules: list[object] = []
 
     log.info("Searching for modules")
-    modules: list[Path] = list(Path("modules").rglob("*.py"))
+    modules: list[Path] = list(Path(__file__).parent.joinpath("modules").rglob("*.py"))
     log.info(f"Found {len(modules)} modules")
 
     for module in modules:
         log.info(f"Loading module '{module}'")
 
-        mdl = import_module(f"modules.{module.name.removesuffix('.py')}")
+        mdl = import_module(f"src.modules.{module.name.removesuffix('.py')}")
 
         if not hasattr(mdl, "Module"):
             log.error(f"Module '{module}' does not have a Module class, cannot load")
