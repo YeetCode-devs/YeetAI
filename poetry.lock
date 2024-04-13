@@ -1794,7 +1794,7 @@ description = "Elegant, modern and asynchronous Telegram MTProto API framework i
 optional = false
 python-versions = "~=3.8"
 files = [
-    {file = "dev.zip", hash = "sha256:f98a1730306a86f5517bb3a7c306300b8f449944f229726e078b686c1b2f79d9"},
+    {file = "dev.zip", hash = "sha256:31c43874e86799935c8b14fc2678c7d13af99b363cc4187997c20c8421da6836"},
 ]
 
 [package.dependencies]
@@ -1803,7 +1803,7 @@ pysocks = "1.7.1"
 
 [package.source]
 type = "url"
-url = "https://github.com/KurimuzonAkuma/pyrogram/archive/refs/heads/dev.zip"
+url = "https://github.com/YeetCode-devs/pyrogram/archive/refs/heads/dev.zip"
 
 [[package]]
 name = "pysocks"
@@ -2303,4 +2303,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "8f0ceb869b7f500b6b15fb210f547508e83b2ebbe4dfc65b77c021fee456a4f8"
+content-hash = "a2d8e35b69dc5942e4df0e89e2a97b2b9b81359ffcee4e21b323d931779a823b"
