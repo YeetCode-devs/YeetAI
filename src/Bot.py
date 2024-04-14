@@ -15,12 +15,15 @@
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
 import asyncio
-from os import getenv
+from os import getenv, listdir
+from os.path import abspath, dirname, join
 
 from dotenv import load_dotenv
+from pyrogram import filters
 from pyrogram.client import Client
+from pyrogram.handlers import MessageHandler
 
-from .Module import load_modules
+from importlib import import_module
 
 
 def main() -> None:
@@ -48,5 +51,30 @@ def main() -> None:
         if isinstance(asyncio.get_event_loop_policy(), asyncio.WindowsSelectorEventLoopPolicy):
             asyncio.set_event_loop_policy(default_event_loop_policy)
 
-    loaded_modules = load_modules(app)
+    commands_dir_name = "commands"
+    commands_dir = join(dirname(abspath(__file__)), commands_dir_name)
+
+    for file in listdir(commands_dir):
+        if file.endswith(".py"):
+            command_name = file[:-3]
+            command = import_module(f"src.{commands_dir_name}.{command_name}")
+
+            if not hasattr(command, "data"):
+                print(f"Command {command_name} does not have data attribute.")
+                continue
+
+            command_data = getattr(command, "data")
+
+            print(f"Registering command {command_data['name']}")
+
+            # Register the command function
+            app.add_handler(MessageHandler(command_data["execute"], filters.command(command_data["name"])))
+
+            # Register aliases if provided
+            if "alias" in command_data:
+                for alias in command_data["alias"]:
+                    print(f"Registering alias {alias} for command {command_data['name']}")
+
+                    app.add_handler(MessageHandler(command_data["execute"], filters.command(alias)))
+
     app.run()
