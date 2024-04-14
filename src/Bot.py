@@ -42,19 +42,6 @@ def main() -> None:
 
     app = Client("app", int(api_id), api_hash, bot_token=bot_token)
 
-    # g4f sets the event loop policy to WindowsSelectorEventLoopPolicy, which breaks pyrogram
-    # It's not particularly caused by WindowsSelectorEventLoopPolicy, and can be caused by
-    # setting any other policy, but pyrogram is not expecting a new instance of the event
-    # loop policy to be set
-    # https://github.com/xtekky/gpt4free/blob/bf82352a3bb28f78a6602be5a4343085f8b44100/g4f/providers/base_provider.py#L20-L22
-    # HACK: Restore the event loop policy to the default one
-    default_event_loop_policy = asyncio.get_event_loop_policy()
-    import g4f  # Trigger g4f event loop policy set # noqa: F401 # pylint: disable=unused-import # isort:skip
-
-    if hasattr(asyncio, "WindowsSelectorEventLoopPolicy"):
-        if isinstance(asyncio.get_event_loop_policy(), asyncio.WindowsSelectorEventLoopPolicy):
-            asyncio.set_event_loop_policy(default_event_loop_policy)
-
     commands_dir_name = "commands"
     commands_dir = join(dirname(abspath(__file__)), commands_dir_name)
 
