@@ -14,8 +14,12 @@
 #
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
+import logging
+
+log: logging.Logger = logging.getLogger(__name__)
+
 import asyncio
-from os import getenv, listdir
+from os import getenv, walk, sep
 from os.path import abspath, dirname, join
 
 from dotenv import load_dotenv
@@ -54,27 +58,32 @@ def main() -> None:
     commands_dir_name = "commands"
     commands_dir = join(dirname(abspath(__file__)), commands_dir_name)
 
-    for file in listdir(commands_dir):
-        if file.endswith(".py"):
-            command_name = file[:-3]
-            command = import_module(f"src.{commands_dir_name}.{command_name}")
+    # TODO: Make this easier to read and understand
+    for root, _, files in walk(commands_dir):
+        for file in files:
+            if file.endswith(".py"):
+                command_file = file[:-3]
+                command_path = join(root[root.index("src") :], command_file).replace(sep, ".")
+                command = import_module(command_path)
 
-            if not hasattr(command, "data"):
-                print(f"Command {command_name} does not have data attribute.")
-                continue
+                log.info(f"Found category '{command_path.split('.')[2]}'")
 
-            command_data = getattr(command, "data")
+                if not hasattr(command, "data"):
+                    log.info(f"Command '{command_file}' does not have data attribute. Skipping.")
+                    continue
 
-            print(f"Registering command {command_data['name']}")
+                command_data = getattr(command, "data")
 
-            # Register the command function
-            app.add_handler(MessageHandler(command_data["execute"], filters.command(command_data["name"])))
+                log.info(f"Registering command '{command_data['name']}'")
 
-            # Register aliases if provided
-            if "alias" in command_data:
-                for alias in command_data["alias"]:
-                    print(f"Registering alias {alias} for command {command_data['name']}")
+                # Register the command function
+                app.add_handler(MessageHandler(command_data["execute"], filters.command(command_data["name"])))
 
-                    app.add_handler(MessageHandler(command_data["execute"], filters.command(alias)))
+                # Register aliases if provided
+                if "alias" in command_data:
+                    for alias in command_data["alias"]:
+                        log.info(f"Registering alias {alias} for command {command_data['name']}")
+
+                        app.add_handler(MessageHandler(command_data["execute"], filters.command(alias)))
 
     app.run()
