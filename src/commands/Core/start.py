@@ -14,8 +14,8 @@
 #
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
-from pyrogram.types import Message
 from pyrogram.client import Client
+from pyrogram.types import Message
 
 
 async def execute(app: Client, message: Message) -> None:

@@ -19,9 +19,8 @@ import json
 import logging
 import os
 
-from openai import OpenAI
+from openai import AsyncOpenAI
 from openai.types import Completion
-
 from pyrogram.client import Client
 from pyrogram.types import Message
 
@@ -55,7 +54,7 @@ class LoggedList(list):
         super().reverse()
 
 
-client = OpenAI(
+client = AsyncOpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
     base_url=os.getenv("OPENAI_API_URL"),
 )
@@ -68,7 +67,7 @@ async def generate_response(user_prompts: list[dict[str, str]]) -> str:
     log.info(f"Generating response with prompt:\n{json.dumps(resultant_prompt, indent=2)}")
 
     try:
-        response: Completion = client.chat.completions.create(
+        response: Completion = await client.chat.completions.create(
             model="pai-001",  # Custom model
             messages=resultant_prompt,
         )

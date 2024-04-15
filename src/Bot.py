@@ -19,15 +19,14 @@ import logging
 log: logging.Logger = logging.getLogger(__name__)
 
 import asyncio
-from os import getenv, walk, sep
+from importlib import import_module
+from os import getenv, sep, walk
 from os.path import abspath, dirname, join
 
 from dotenv import load_dotenv
 from pyrogram import filters
 from pyrogram.client import Client
 from pyrogram.handlers import MessageHandler
-
-from importlib import import_module
 
 
 def main() -> None:
@@ -56,7 +55,7 @@ def main() -> None:
                 log.info(f"Found category '{command_path.split('.')[2]}'")
 
                 if not hasattr(command, "data"):
-                    log.info(f"Command '{command_file}' does not have data attribute. Skipping.")
+                    log.warning(f"Command '{command_file}' does not have data attribute. Skipping.")
                     continue
 
                 command_data = getattr(command, "data")
