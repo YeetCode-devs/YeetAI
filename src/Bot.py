@@ -15,18 +15,16 @@
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
 import logging
-
-log: logging.Logger = logging.getLogger(__name__)
-
-import asyncio
 from importlib import import_module
-from os import getenv, sep, walk
-from os.path import abspath, dirname, join
+from os import getenv, sep
+from pathlib import Path
 
 from dotenv import load_dotenv
 from pyrogram import filters
 from pyrogram.client import Client
 from pyrogram.handlers import MessageHandler
+
+log: logging.Logger = logging.getLogger(__name__)
 
 
 def main() -> None:
@@ -41,35 +39,34 @@ def main() -> None:
 
     app = Client("app", int(api_id), api_hash, bot_token=bot_token)
 
-    commands_dir_name = "commands"
-    commands_dir = join(dirname(abspath(__file__)), commands_dir_name)
+    commands_dir_name: str = "commands"
+    bot_src_dir: Path = Path(__file__).parent
+    bot_root: Path = bot_src_dir.parent
+    commands_dir: Path = Path(bot_src_dir).joinpath(commands_dir_name)
 
-    # TODO: Make this easier to read and understand
-    for root, _, files in walk(commands_dir):
-        for file in files:
-            if file.endswith(".py"):
-                command_file = file[:-3]
-                command_path = join(root[root.index("src") :], command_file).replace(sep, ".")
-                command = import_module(command_path)
+    for cmdfile in Path(commands_dir).rglob("*.py"):
+        if cmdfile.parent.name != "commands":
+            log.info(f"Found category: {cmdfile.parent.name}")
 
-                log.info(f"Found category '{command_path.split('.')[2]}'")
+        # We use relative to bot_root (instead of bot_src_dir), otherwise we won't
+        # get the src. prefix, which will cause import to fail.
+        # log.info(str(cmdfile.relative_to(bot_root)).removesuffix(".py").replace(sep, "."))
+        cmd: object = import_module(str(cmdfile.relative_to(bot_root)).removesuffix(".py").replace(sep, "."))
 
-                if not hasattr(command, "data"):
-                    log.warning(f"Command '{command_file}' does not have data attribute. Skipping.")
-                    continue
+        # Make sure data attribute exists
+        if not hasattr(cmd, "data"):
+            log.warning(f"Command '{cmdfile}' does not have data attribute. Skipping.")
+            continue
 
-                command_data = getattr(command, "data")
+        cmd_data: dict = getattr(cmd, "data")
+        log.info(f"Registering command '{cmd_data['name']}'")
 
-                log.info(f"Registering command '{command_data['name']}'")
+        # Collect main cmd trigger and its aliases
+        triggers: list[str] = [cmd_data["name"]]
+        if cmd_data.get("alias"):
+            triggers = [*triggers, *cmd_data["alias"]]
 
-                # Register the command function
-                app.add_handler(MessageHandler(command_data["execute"], filters.command(command_data["name"])))
-
-                # Register aliases if provided
-                if "alias" in command_data:
-                    for alias in command_data["alias"]:
-                        log.info(f"Registering alias {alias} for command {command_data['name']}")
-
-                        app.add_handler(MessageHandler(command_data["execute"], filters.command(alias)))
+        # Now register execute function as handler, with main trigger and its aliases, all at once
+        app.add_handler(MessageHandler(cmd_data["execute"], filters.command(triggers)))
 
     app.run()
