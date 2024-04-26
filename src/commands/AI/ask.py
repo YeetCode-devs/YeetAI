@@ -14,7 +14,6 @@
 #
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
-import asyncio
 import json
 import logging
 import os
@@ -32,7 +31,6 @@ SYSTEM_PROMPT: str = (
     f"Your response will be sent to telegram. Please limit your output to 4096 character otherwise the message will fail to send."
 )
 log: logging.Logger = logging.getLogger(__name__)
-log.info(f"{asyncio.get_event_loop_policy()}")
 
 
 class LoggedList(list):
