@@ -31,23 +31,9 @@ log: logging.Logger = logging.getLogger(__name__)
 class CommandData:
     """A data-structure for a command file's data.
 
-    This class aims to provide type-hinting and a less error-prone implementation. The error-prone
-    parts are now directed towards this class, so the loader implementation does not have to
-    deal with them.
-
-    This includes: Checking whether an important field in the command-file data exists,
-    and checking whether they are of the correct type. In the future, more sanity checks might
-    be implemented, and this class centralizes them.
-
-    Another benefit is that any future changes to the command-file data structure can be
-    implemented here, and the loader implementation does not have to be touched.
-
-    In addition to that, any particular command-file data can be accessed much more easily,
-    without having to verify whether they exist, and they can be accessed with a property-like
-    syntax.
-
-    BONUS: type-hinting and less chance of making mistake - imagine data["name"] or data.get("name")
-    where you can easily make a typo, vs data.name where you can't possibly make any typo.
+    This class can be used by any command-file that need to parse/use a particular command's data
+    (for example the help command [TODO!]), of which are stored raw by the command loader.
+    It's just for convenience of type-hinting, and is not strictly required to process command data by any mean.
     """
 
     MANDATORY_FIELD: dict = {
@@ -77,7 +63,10 @@ class CommandData:
         self._command_path: str = command_path
 
         log.info(f"Verifying command-file '{self.name}' data structure")
-        self.sanity_check()
+
+        # Since the loader is no longer using this, sanity check is not needed. However this line (and the method)
+        # is kept for future usage/reference.
+        # self.sanity_check()
 
     def _is_correct_type(self, field_name: str, expected_type: Any) -> None:
         """Check if the command-file data has the correct type.
@@ -157,13 +146,13 @@ class CommandData:
         return self._data.get("category", "")
 
 
-def load_commands(app: Client) -> list[CommandData]:
+def load_commands(app: Client) -> list[dict[str, str | Callable]]:
     commands_dir_name: str = "commands"
     bot_src_dir: Path = Path(__file__).parent
     bot_root: Path = bot_src_dir.parent
     commands_dir: Path = Path(bot_src_dir).joinpath(commands_dir_name)
 
-    commands: list[CommandData] = []
+    commands: list[dict[str, str | Callable]] = []
 
     for cmdfile in Path(commands_dir).rglob("*.py"):
         if cmdfile.parent.name != "commands":
@@ -180,18 +169,17 @@ def load_commands(app: Client) -> list[CommandData]:
             continue
 
         cmd_data: dict = getattr(cmd, "data")
-        cmd_data: CommandData = CommandData(getattr(cmd, "data"), cmdfile.name)
-        log.info(f"Registering command '{cmd_data.name}'")
+        log.info(f"Registering command '{cmd_data['name']}'")
 
         # Collect cmd datas
-        commands.append(cmd_data)
+        commands.append(cmd_data.get("name"))
 
         # Collect main cmd trigger and its aliases
-        triggers: list[str] = [cmd_data.name]
-        if cmd_data.alias:
-            triggers = [*triggers, *cmd_data.alias]
+        triggers: list[str] = cmd_data["name"]
+        if cmd_data.get("alias"):
+            triggers = [*triggers, *cmd_data["alias"]]
 
         # Now register execute function as handler, with main trigger and its aliases, all at once
-        app.add_handler(MessageHandler(cmd_data.execute, filters.command(triggers)))
+        app.add_handler(MessageHandler(cmd_data["execute"], filters.command(triggers)))
 
         return commands
