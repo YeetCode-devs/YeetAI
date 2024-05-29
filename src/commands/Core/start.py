@@ -14,21 +14,20 @@
 #
 # Copyright (c) 2024, YeetCode Developers <YeetCode-devs@protonmail.com>
 
-from pyrogram import filters
 from pyrogram.client import Client
-from pyrogram.handlers import MessageHandler
 from pyrogram.types import Message
 
-from src.Module import ModuleBase
+
+async def execute(app: Client, message: Message) -> None:
+    await message.reply("Hello.")
 
 
-class Module(ModuleBase):
-    def on_load(self, app: Client):
-        app.add_handler(MessageHandler(start, filters.command("start")))
-
-    def on_shutdown(self, app: Client):
-        pass
-
-
-async def start(app: Client, message: Message):
-    await message.reply("Hello!")
+data = {
+    "name": "start",
+    "description": "Starts the bot.",
+    # "alias": ["on"], # Optional
+    "usage": "/start",
+    "example": "/start",
+    "category": "Core",
+    "execute": execute,
+}
